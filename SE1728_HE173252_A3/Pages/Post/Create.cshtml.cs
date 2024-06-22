@@ -43,6 +43,7 @@ namespace SE1728_HE173252_A3.Pages.Post
             await _context.SaveChangesAsync();
 
             await _hubContext.Clients.All.SendAsync("LoadPosts");
+            await _hubContext.Clients.All.SendAsync("LoadMyPosts");
             return RedirectToPage("./Index");
         }
     }

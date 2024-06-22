@@ -6,10 +6,25 @@
     ViewData["Title"] = "Index";
 }
 
-<p class="mt-5">
-    <a asp-page="Create" class="btn btn-outline-success">New Post</a>
-    <a asp-page="MyPosts" class="btn btn-outline-primary">My Posts</a>
-</p>
+<div class="row mt-5">
+    <div class="col-md-3">
+        <p>
+            <a asp-page="Create" class="btn btn-outline-success">New Post</a>
+            <a asp-page="MyPosts" class="btn btn-outline-primary">My Posts</a>
+        </p>
+    </div>
+    <div class="col-md-3">
+
+    </div>
+    <div class="col-md-6">
+        <form method="get" action="/Post/Search" class="d-flex">
+            <input class="form-control me-2" type="text" placeholder="Search by post id, title or content" name="SearchValue">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+</div>
+
+
 
 <nav aria-label="Page navigation example" class="mt-5">
     <ul class="pagination pagination-md justify-content-end">
@@ -23,6 +38,7 @@
             <a class="page-link btnNext" data-id="">Next</a>
         </li>
     </ul>
+    <input type="hidden" id="maxPage" value="">
 </nav>
 
 <div id="post_list">
@@ -62,35 +78,11 @@
 
 @section Scripts {
     <script>
-        function LoadButton() {
-            const currentPageElement = document.getElementById('current_page_num');
-            const btnPrev = document.querySelector('.btnPrev');
-            const btnNext = document.querySelector('.btnNext');
-
-            let currentPage = parseInt(currentPageElement.innerText, 10);
-
-            let prevPage = currentPage - 1;
-            let nextPage = currentPage + 1;
-
-            btnPrev.setAttribute('data-id', prevPage);
-            btnNext.setAttribute('data-id', nextPage);
-
-            if (prevPage < 1) {
-                btnPrev.classList.add('disabled');
-            } else {
-                btnPrev.classList.remove('disabled');
-            }
-
-            if (currentPage == @Model.TotalPages) {
-                btnNext.classList.add('disabled');
-            } else {
-                btnNext.classList.remove('disabled');
-            }
-        }
+        document.addEventListener('DOMContentLoaded', LoadButton());
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', LoadButton());
+        document.addEventListener('DOMContentLoaded', ShowPosts());
     </script>
 
     <script>
@@ -112,33 +104,5 @@
             }
 
         });
-
-        function MakeQuery(page) {
-            let postList = document.getElementById("post_list");
-            postList.innerHTML = "";
-            fetch("/Post/Index?handler=GetPosts&pageNumber=" + page)
-                .then(res => res.json())
-                .then(data => data.forEach(item => {
-                    console.log(data);
-                    let html = `
-                                                    <div class="card mt-5">
-                                                        <div class="card-header" style="font-weight: bold; font-size: 24px">
-                                                            ${item.Author} posted in the ${item.Category} category
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h3 class="card-title">${item.Title}</h3>
-                                                            <hr />
-                                                            <p class="card-text">
-                                                                ${item.Content}
-                                                            </p>
-                                                        </div>
-                                                        <div class="card-footer text-muted">
-                                                            Posted on ${item.CreatedDate}
-                                                        </div>
-                                                     </div>
-                                                    `
-                    postList.innerHTML += html;
-                }));
-        }
     </script>
 }

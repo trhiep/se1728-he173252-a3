@@ -16,12 +16,14 @@ namespace SE1728_HE173252_A3.Pages
             {"/Auth/Login", false },
             {"/Auth/Register", false },
             {"/Auth/Logout", false },
-            {"/Post/Index", false },
+            {"/Post/Index", true },
             {"/Post/Create", true },
             {"/Post/Details", true },
             {"/Post/Delete", true },
             {"/Post/Edit", true },
             {"/Post/MyPosts", true },
+            {"/Post/Search", true },
+            {"/Post/PageDetailsModal", true },
         };
 
         public AppUser LogedInUser { get; private set; }

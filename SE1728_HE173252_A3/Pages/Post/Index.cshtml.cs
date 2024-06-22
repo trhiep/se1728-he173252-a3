@@ -19,14 +19,18 @@ namespace SE1728_HE173252_A3.Pages.Post
         public IndexModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
         {
             _context = context;
-            int totalRecords = _context.Posts.Count();
-            TotalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
         }
 
         public IList<SE1728_HE173252_A3.Models.Post> Post { get; set; } = default!;
         public int PageSize { get; set; } = 3;
         public int PageNumber { get; set; } = 1;
-        public int TotalPages { get; set; }
+
+        public ContentResult OnGetGetTotalPages()
+        {
+            int totalRecords = _context.Posts.Count();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
+            return Content(totalPages.ToString());
+        }
 
         public ContentResult OnGetGetPosts(int? pageNumber)
         {
@@ -49,7 +53,7 @@ namespace SE1728_HE173252_A3.Pages.Post
                     Content = item.Content,
                     Category = item.Category.CategoryName,
                     CreatedDate = CustomConverter.GetFormatedDateTime(item.CreatedDate),
-                    UpdatedDate = CustomConverter.GetFormatedDateTime(item.UpdatedDate)
+                    UpdatedDate = item.CreatedDate == item.UpdatedDate ? "Not edited" : "Edited on " + CustomConverter.GetFormatedDateTime(item.UpdatedDate)
                 });
             }
             string jsonStr = JsonSerializer.Serialize(postsDTO);
@@ -59,6 +63,7 @@ namespace SE1728_HE173252_A3.Pages.Post
 
     public class PostDTO
     {
+        public string? PostID { get; set; }
         public string Title { get; set; } = "N/A";
         public string Author { get; set; } = "N/A";
         public string Category { get; set; } = "N/A";

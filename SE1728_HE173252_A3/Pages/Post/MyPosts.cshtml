@@ -35,8 +35,8 @@
             </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model.Post)
+    <tbody id="my_post_table">
+        @* @foreach (var item in Model.Post)
         {
             <tr>
                 <td>
@@ -66,7 +66,7 @@
                     <a class="btn btn-danger btnDelete" data-id="@item.PostID">Delete</a>
                 </td>
             </tr>
-        }
+        } *@
     </tbody>
 </table>
 
@@ -75,6 +75,10 @@
 </p>
 
 @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', ShowMyPosts());
+    </script>
+
     <script>
         document.addEventListener('click', function (event) {
             if (event.target.classList.contains('btnDelete')) {

@@ -9,11 +9,11 @@ using SE1728_HE173252_A3.Models;
 
 namespace SE1728_HE173252_A3.Pages.Post
 {
-    public class DetailsModel : BasePageModel
+    public class PageDetailsModalModel : BasePageModel
     {
         private readonly SE1728_HE173252_A3.Models.ApplicationDBContext _context;
 
-        public DetailsModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
+        public PageDetailsModalModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
         {
             _context = context;
         }
@@ -27,7 +27,7 @@ namespace SE1728_HE173252_A3.Pages.Post
                 return NotFound();
             }
 
-            var post = await _context.Posts.Include(c => c.Category).FirstOrDefaultAsync(m => m.PostID == id);
+            var post = await _context.Posts.Include(p => p.Author).Include(p => p.Category).FirstOrDefaultAsync(m => m.PostID == id);
             if (post == null)
             {
                 return NotFound();
@@ -38,6 +38,5 @@ namespace SE1728_HE173252_A3.Pages.Post
             }
             return Page();
         }
-
     }
 }

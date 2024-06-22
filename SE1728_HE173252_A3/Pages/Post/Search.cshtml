@@ -1,0 +1,140 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Post.SearchModel
+@using SE1728_HE173252_A3.Utils;
+
+@{
+    ViewData["Title"] = "Search";
+    string NotEditedString = "Not edited";
+}
+
+<h1>Search</h1>
+
+<div class="row mt-5">
+    <div class="col-md-3">
+        <p>
+            <a asp-page="Create" class="btn btn-outline-success">New Post</a>
+            <a asp-page="MyPosts" class="btn btn-outline-primary">My Posts</a>
+        </p>
+    </div>
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-6">
+        <form method="get" action="/Post/Search" class="d-flex">
+            <input class="form-control me-2" type="text" placeholder="Search by post id, title or content" name="SearchValue">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+</div>
+
+<table class="table table-hover mt-5" id="postsTable">
+    <thead>
+        <tr>
+            <th>
+                Post ID
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Created On
+            </th>
+            <th>
+                Edited On
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Post != null)
+        {
+            @foreach (var item in Model.Post)
+            {
+                <tr class="click-row" data-post-id="@item.PostID">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PostID)
+                    </td>
+                    <td style="max-width:400px">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                    </td>
+                    <td>
+                        @CustomConverter.GetFormatedDateTime(item.CreatedDate)
+                    </td>
+                    <td>
+                        @if (item.CreatedDate != item.UpdatedDate)
+                        {
+                            @CustomConverter.GetFormatedDateTime(item.UpdatedDate)
+                            ;
+                        }
+                        else
+                        {
+                            @NotEditedString
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="postDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-lg-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postDetailsModalLabel">Order Details</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table" id="postDetailsTable">
+                    <!-- Order details will be populated here -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-lg-custom {
+        max-width: 60%;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Add click event listener to rows
+            $('#postsTable tbody').on('click', 'tr.click-row', function () {
+                var postId = $(this).data('post-id');
+                $.ajax({
+                    url: '@Url.Page("PageDetailsModal", "OnGetAsync")',
+                    type: 'GET',
+                    data: { id: postId },
+                    success: function (data) {
+                        $('#postDetailsTable').html(data);
+                        $('#postDetailsModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Error fetching order details.');
+                    }
+                });
+            });
+
+            $('#postDetailsModal .btn-secondary').click(function () {
+                $('#postDetailsModal').modal('hide');
+            });
+        });
+    </script>
+}

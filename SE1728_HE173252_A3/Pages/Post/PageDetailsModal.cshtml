@@ -1,0 +1,37 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Post.PageDetailsModalModel
+@using SE1728_HE173252_A3.Utils
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PageDetailsModal</title>
+</head>
+<body>
+    <div class="card mt-5">
+        <div class="card-header" style="font-weight: bold; font-size: 24px">
+            @Html.DisplayFor(modelItem => Model.Post.Author.Fullname) posted in the @Html.DisplayFor(modelItem => Model.Post.Category.CategoryName) category
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">@Html.DisplayFor(modelItem => Model.Post.Title)</h3>
+            <hr />
+            <p class="card-text">
+                @Html.Raw(Model.Post.Content)
+            </p>
+        </div>
+        <div class="card-footer text-muted">
+            Posted on @CustomConverter.GetFormatedDateTime(Model.Post.CreatedDate)
+            @if (Model.Post.UpdatedDate != Model.Post.CreatedDate)
+            {
+                <span style="font-style: italic; color: gray">(Edited on @CustomConverter.GetFormatedDateTime(Model.Post.UpdatedDate))</span>
+            }
+        </div>
+    </div>
+</body>
+</html>

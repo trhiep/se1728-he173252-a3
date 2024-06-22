@@ -38,7 +38,7 @@ namespace SE1728_HE173252_A3.Pages.Auth
                 {
                     var userJson = JsonSerializer.Serialize(user);
                     HttpContext.Session.SetString("AppUser", userJson);
-                    return RedirectToPage("/Index");
+                    return RedirectToPage("/Post/Index");
                 }
                 else
                 {
