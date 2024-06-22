@@ -13,6 +13,7 @@ namespace SE1728_HE173252_A3
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
+            builder.Services.AddSession();
 
             var app = builder.Build();
 
@@ -28,6 +29,8 @@ namespace SE1728_HE173252_A3
             app.UseAuthorization();
 
             app.MapRazorPages();
+
+            app.UseSession();
 
             app.Run();
         }

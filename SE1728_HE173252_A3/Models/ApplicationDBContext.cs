@@ -26,6 +26,7 @@ namespace SE1728_HE173252_A3.Models
             {
                 entity.HasKey(e => e.UserID);
                 entity.Property(e => e.UserID).ValueGeneratedOnAdd();
+                entity.HasIndex(e => e.Email).IsUnique();
             });
 
             modelBuilder.Entity<AppUser>()

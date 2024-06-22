@@ -36,7 +36,7 @@ namespace SE1728_HE173252_A3.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Fullname")
                         .IsRequired()
@@ -47,6 +47,9 @@ namespace SE1728_HE173252_A3.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("AppUsers");
                 });

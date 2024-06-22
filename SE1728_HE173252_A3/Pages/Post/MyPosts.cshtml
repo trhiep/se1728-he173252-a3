@@ -1,0 +1,97 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Post.MyPostsModel
+@using SE1728_HE173252_A3.Utils
+
+@{
+    ViewData["Title"] = "MyPosts";
+    string NotEditedString = "N/A";
+}
+
+<h1>My Posts</h1>
+
+<p class="mt-5">
+    <a asp-page="Create" class="btn btn-outline-success">New Post</a>
+</p>
+<table class="table mt-5">
+    <thead>
+        <tr>
+            <th>
+                Post ID
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Created On
+            </th>
+            <th>
+                Edited On
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Post)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostID)
+                </td>
+                <td style="max-width:250px">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
+                <td>
+                    @CustomConverter.GetFormatedDateTime(item.CreatedDate)
+                </td>
+                <td>
+                    @if (item.CreatedDate != item.UpdatedDate)
+                    {
+                        @CustomConverter.GetFormatedDateTime(item.UpdatedDate);
+                    } else
+                    {
+                        @NotEditedString
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.PostID" class="btn btn-warning">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.PostID" class="btn btn-success">Details</a> |
+                    <a class="btn btn-danger btnDelete" data-id="@item.PostID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p class="mt-5">
+    <a asp-page="./Index" class="btn btn-outline-primary">Back To All Posts</a>
+</p>
+
+@section Scripts {
+    <script>
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('btnDelete')) {
+                // Get the order ID from the data-id attribute of the Delete button
+                var postId = event.target.getAttribute('data-id');
+                Swal.fire({
+                    title: "Are you sure you want to delete this post?",
+                    icon: 'warning',
+                    showDenyButton: true,
+                    confirmButtonText: "No", // Confirm button moved to the right
+                    denyButtonText: "Yes" // Deny button moved to the left
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        window.location.href = '@Url.Page("Delete")?id=' + postId;
+                    }
+                });
+            }
+        });
+    </script>
+}

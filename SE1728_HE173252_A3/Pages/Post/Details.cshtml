@@ -1,0 +1,52 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Post.DetailsModel
+@using SE1728_HE173252_A3.Utils
+
+@{
+    ViewData["Title"] = "Details";
+    string NotEditedStr = "Not edited";
+}
+
+<h1>Post Details</h1>
+
+<div>
+    <h4>@Model.Post.Title</h4>
+    <hr />
+    <dl class="row">
+       
+        <dt class="col-sm-2">
+            Content
+        </dt>
+        <dd class="col-sm-10">
+            @Html.Raw(Model.Post.Content)
+        </dd>
+        <dt class="col-sm-2">
+            Category
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Post.Category.CategoryName
+        </dd>
+        <dt class="col-sm-2">
+            Created Date
+        </dt>
+        <dd class="col-sm-10">
+            @CustomConverter.GetFormatedDateTime(Model.Post.CreatedDate)
+        </dd>
+        <dt class="col-sm-2">
+           Updated Date
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Post.CreatedDate == Model.Post.UpdatedDate)
+            {
+                @NotEditedStr
+            } else
+            {
+                @CustomConverter.GetFormatedDateTime(Model.Post.UpdatedDate)
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./MyPosts" class="btn btn-outline-primary">Back to My Posts</a> | 
+    <a asp-page="./Edit" asp-route-id="@Model.Post?.PostID" class="btn btn-outline-warning">Edit</a>
+</div>

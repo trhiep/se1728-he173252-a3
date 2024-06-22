@@ -1,0 +1,59 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Auth.RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row g-5 mt-3">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <div class="border-start border-5 border-primary ps-5 mb-5" style="max-width: 600px;">
+            <h1 class="display-5 text-uppercase mb-0">Register</h1>
+        </div>
+
+        @if (Model.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="AppUser.Fullname" class="control-label"></label>
+                    <input asp-for="AppUser.Fullname" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label asp-for="AppUser.Address" class="control-label"></label>
+                    <input asp-for="AppUser.Address" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="AppUser.Email" class="control-label"></label>
+                    <input asp-for="AppUser.Email" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="AppUser.Password" class="control-label"></label>
+                    <input asp-for="AppUser.Password" class="form-control" type="password" />
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary w-100" type="submit">Register</button>
+                </div>
+                <div class="col-12 text-center">
+                    <label>Or</label>
+                </div>
+                <div class="col-12">
+                    <a href="/Auth/Login" class="btn btn-outline-primary w-100">Login</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

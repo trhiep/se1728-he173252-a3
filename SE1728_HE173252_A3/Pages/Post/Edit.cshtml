@@ -1,0 +1,57 @@
+﻿@page
+@model SE1728_HE173252_A3.Pages.Post.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="mt-5">
+    <a asp-page="Index" class="btn btn-outline-primary">Back to List</a>
+</div>
+
+<div class="row g-5 mt-3">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <div class="border-start border-5 border-primary ps-5 mb-5" style="max-width: 600px;">
+            <h1 class="display-5 text-uppercase mb-0">Edit Post</h1>
+        </div>
+        <form method="post">
+            <input type="hidden" asp-for="Post.PostID" />
+            <input type="hidden" asp-for="Post.CreatedDate" />
+            <input type="hidden" asp-for="Post.PublishStatus" />
+            <input type="hidden" asp-for="Post.AuthorID" />
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Post.Title" class="control-label"></label>
+                    <input asp-for="Post.Title" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label asp-for="Post.Content" class="control-label"></label>
+                    <input asp-for="Post.Content" class="form-control" id="inp_content">
+                </div>
+                <div class="col-12">
+                    <label asp-for="Post.CategoryID" class="control-label">Category</label>
+                    <select asp-for="Post.CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Submit Change</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        var editor1cfg = {}
+        editor1cfg.toolbar = "basic";
+        var editor1 = new RichTextEditor("#inp_content", editor1cfg);
+    </script>
+}
