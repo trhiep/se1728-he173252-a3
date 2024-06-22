@@ -13,36 +13,22 @@
 
 <nav aria-label="Page navigation example" class="mt-5">
     <ul class="pagination pagination-md justify-content-end">
-        @if (Model.PageNumber > 1)
-        {
-            <li class="page-item text-center" style="width: 85px">
-                <a class="page-link" asp-page="/Post/Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
-            </li>
-        } else
-        {
-            <li class="page-item disabled text-center" style="width: 85px">
-                <a class="page-link" href="#">Previous</a>
-            </li>
-        }
-        <li class="page-item"><a class="page-link" href="#">@Model.PageNumber</a></li>
+        <li class="page-item text-center" style="width: 85px">
+            <a class="page-link btnPrev" data-id="">Previous</a>
+        </li>
 
-        @if (Model.PageNumber < Model.TotalPages)
-        {
-            <li class="page-item text-center" style="width: 85px">
-                <a class="page-link" asp-page="/Post/Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled text-center" style="width: 85px">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        }
-        
+        <li class="page-item"><a class="page-link" id="current_page_num">1</a></li>
+
+        <li class="page-item text-center" style="width: 85px">
+            <a class="page-link btnNext" data-id="">Next</a>
+        </li>
     </ul>
 </nav>
 
-@foreach (var item in Model.Post) {
+<div id="post_list">
+</div>
+
+@* @foreach (var item in Model.Post) {
     <div class="card mt-5">
         <div class="card-header" style="font-weight: bold; font-size: 24px">
             @Html.DisplayFor(modelItem => item.Author.Fullname) posted in the @Html.DisplayFor(modelItem => item.Category.CategoryName) category
@@ -62,4 +48,97 @@
             }
         </div>
     </div>
+} *@
+
+<style>
+    .page-link.disabled {
+        pointer-events: none;
+        cursor: default;
+        color: #6c757d;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function LoadButton() {
+            const currentPageElement = document.getElementById('current_page_num');
+            const btnPrev = document.querySelector('.btnPrev');
+            const btnNext = document.querySelector('.btnNext');
+
+            let currentPage = parseInt(currentPageElement.innerText, 10);
+
+            let prevPage = currentPage - 1;
+            let nextPage = currentPage + 1;
+
+            btnPrev.setAttribute('data-id', prevPage);
+            btnNext.setAttribute('data-id', nextPage);
+
+            if (prevPage < 1) {
+                btnPrev.classList.add('disabled');
+            } else {
+                btnPrev.classList.remove('disabled');
+            }
+
+            if (currentPage == @Model.TotalPages) {
+                btnNext.classList.add('disabled');
+            } else {
+                btnNext.classList.remove('disabled');
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', LoadButton());
+    </script>
+
+    <script>
+        document.addEventListener('click', function (event) {
+            var queryPage = 1;
+            if (event.target.classList.contains('btnNext')) {
+                queryPage = event.target.getAttribute('data-id');
+                MakeQuery(queryPage);
+                const currentPageElement = document.getElementById('current_page_num');
+                currentPageElement.innerHTML = parseInt(currentPageElement.innerText, 10) + 1;
+                LoadButton();
+            } else if(event.target.classList.contains('btnPrev')) {
+                queryPage = event.target.getAttribute('data-id');
+                MakeQuery(queryPage);
+                const currentPageElement = document.getElementById('current_page_num');
+                console.log(parseInt(currentPageElement.innerText, 10));
+                currentPageElement.innerHTML = parseInt(currentPageElement.innerText, 10) - 1;
+                LoadButton();
+            }
+
+        });
+
+        function MakeQuery(page) {
+            let postList = document.getElementById("post_list");
+            postList.innerHTML = "";
+            fetch("/Post/Index?handler=GetPosts&pageNumber=" + page)
+                .then(res => res.json())
+                .then(data => data.forEach(item => {
+                    console.log(data);
+                    let html = `
+                                                    <div class="card mt-5">
+                                                        <div class="card-header" style="font-weight: bold; font-size: 24px">
+                                                            ${item.Author} posted in the ${item.Category} category
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <h3 class="card-title">${item.Title}</h3>
+                                                            <hr />
+                                                            <p class="card-text">
+                                                                ${item.Content}
+                                                            </p>
+                                                        </div>
+                                                        <div class="card-footer text-muted">
+                                                            Posted on ${item.CreatedDate}
+                                                        </div>
+                                                     </div>
+                                                    `
+                    postList.innerHTML += html;
+                }));
+        }
+    </script>
 }

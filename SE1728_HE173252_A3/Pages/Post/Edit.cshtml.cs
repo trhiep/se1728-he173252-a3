@@ -5,18 +5,22 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SE1728_HE173252_A3.Models;
+using SE1728_SignalR_CRUD;
 
 namespace SE1728_HE173252_A3.Pages.Post
 {
     public class EditModel : BasePageModel
     {
         private readonly SE1728_HE173252_A3.Models.ApplicationDBContext _context;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public EditModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
+        public EditModel(SE1728_HE173252_A3.Models.ApplicationDBContext context, IHubContext<SignalRHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -63,6 +67,7 @@ namespace SE1728_HE173252_A3.Pages.Post
                 }
             }
 
+            await _hubContext.Clients.All.SendAsync("LoadPosts");
             return RedirectToPage("./MyPosts");
         }
 

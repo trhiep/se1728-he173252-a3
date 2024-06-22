@@ -5,17 +5,22 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using SE1728_HE173252_A3.Models;
+using SE1728_SignalR_CRUD;
 
 namespace SE1728_HE173252_A3.Pages.Post
 {
     public class CreateModel : BasePageModel
     {
         private readonly SE1728_HE173252_A3.Models.ApplicationDBContext _context;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public CreateModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
+        public CreateModel(SE1728_HE173252_A3.Models.ApplicationDBContext context, IHubContext<SignalRHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public IActionResult OnGet()
@@ -37,6 +42,7 @@ namespace SE1728_HE173252_A3.Pages.Post
             _context.Posts.Add(Post);
             await _context.SaveChangesAsync();
 
+            await _hubContext.Clients.All.SendAsync("LoadPosts");
             return RedirectToPage("./Index");
         }
     }

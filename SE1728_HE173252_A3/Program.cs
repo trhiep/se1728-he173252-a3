@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SE1728_HE173252_A3.Models;
+using SE1728_SignalR_CRUD;
 
 namespace SE1728_HE173252_A3
 {
@@ -14,6 +15,7 @@ namespace SE1728_HE173252_A3
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
             builder.Services.AddSession();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -31,6 +33,8 @@ namespace SE1728_HE173252_A3
             app.MapRazorPages();
 
             app.UseSession();
+
+            app.MapHub<SignalRHub>("/SignalRHub");
 
             app.Run();
         }

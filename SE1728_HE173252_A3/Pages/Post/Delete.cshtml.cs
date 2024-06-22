@@ -4,18 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SE1728_HE173252_A3.Models;
+using SE1728_SignalR_CRUD;
 
 namespace SE1728_HE173252_A3.Pages.Post
 {
     public class DeleteModel : BasePageModel
     {
         private readonly SE1728_HE173252_A3.Models.ApplicationDBContext _context;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public DeleteModel(SE1728_HE173252_A3.Models.ApplicationDBContext context)
+        public DeleteModel(SE1728_HE173252_A3.Models.ApplicationDBContext context, IHubContext<SignalRHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -36,6 +40,7 @@ namespace SE1728_HE173252_A3.Pages.Post
                 await _context.SaveChangesAsync();
             }
 
+            await _hubContext.Clients.All.SendAsync("LoadPosts");
             return RedirectToPage("./MyPosts");
         }
 
