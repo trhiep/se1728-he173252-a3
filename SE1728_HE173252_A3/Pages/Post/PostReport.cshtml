@@ -1,29 +1,31 @@
 ﻿@page
-@model SE1728_HE173252_A3.Pages.Post.SearchModel
-@using SE1728_HE173252_A3.Utils;
+@model SE1728_HE173252_A3.Pages.Post.PostReportModel
+@using SE1728_HE173252_A3.Utils
 
 @{
-    ViewData["Title"] = "Search";
-    string NotEditedString = "Not edited";
+    ViewData["Title"] = "PostReport";
+    var NotEditedString = "Not edited";
 }
 
-<h1>Search</h1>
+<h1>Post Report Statistics</h1>
 
-<div class="row mt-5">
-    <div class="col-md-3">
-        <p>
-            <a asp-page="Create" class="btn btn-outline-success">New Post</a>
-            <a asp-page="MyPosts" class="btn btn-outline-primary">My Posts</a>
-        </p>
-    </div>
-    <div class="col-md-3">
-    </div>
-    <div class="col-md-6">
-        <form method="get" action="/Post/Search" class="d-flex">
-            <input id="searchValue" class="form-control me-2" type="text" placeholder="Search by post id, title or content" name="SearchValue">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </form>
-    </div>
+<div class="mt-5">
+    <form asp-page="./PostReport" method="get">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <label for="startDate">Start Date</label>
+                <input id="startDate" asp-for="@Model.StartDate" class="form-control" style="height: calc(2.25rem + 2px);" />
+            </div>
+            <div class="col-md-5">
+                <label for="endDate">End Date</label>
+                <input id="endDate" asp-for="@Model.EndDate" class="form-control" style="height: calc(2.25rem + 2px);" />
+            </div>
+            <div class="col-md-2">
+                <label for="btnSubmit"></label>
+                <input id="btnSubmit" type="submit" value="View Report" class="form-control btn btn-outline-primary" style="height: calc(2.25rem + 2px);" />
+            </div>
+        </div>
+    </form>
 </div>
 
 <table class="table table-hover mt-5" id="postsTable">
@@ -49,7 +51,7 @@
             </th>
         </tr>
     </thead>
-    <tbody id="search_post_table">
+    <tbody id="post_report_table">
         @if (Model.Post != null)
         {
             @foreach (var item in Model.Post)
@@ -61,7 +63,7 @@
                     <td style="max-width:400px">
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
-                    <td style="max-width:400px">
+                    <td>
                         @Html.DisplayFor(modelItem => item.Author.Email)
                     </td>
                     <td>
@@ -96,7 +98,7 @@
             </div>
             <div class="modal-body">
                 <table class="table" id="postDetailsTable">
-                    <!-- Order details will be populated here -->
+                    <!-- Post details will be populated here -->
                 </table>
             </div>
             <div class="modal-footer">
@@ -105,6 +107,9 @@
         </div>
     </div>
 </div>
+
+<div id="startDateDisplay" data-message="@Model.StartDateDisplay"></div>
+<div id="endDateDisplay" data-message="@Model.EndDateDisplay"></div>
 
 <style>
     .modal-lg-custom {
@@ -119,6 +124,26 @@
 </style>
 
 @section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var startDate = document.getElementById('startDateDisplay');
+            var startDateVal = startDate.getAttribute('data-message');
+            var startDateParsed = new Date(startDateVal);
+            flatpickr("#startDate", {
+                dateFormat: "d/m/Y",
+                defaultDate: startDateParsed
+            });
+
+            var endDate = document.getElementById('endDateDisplay');
+            var endDateVal = endDate.getAttribute('data-message');
+            var endDateParsed = new Date(endDateVal);
+            flatpickr("#endDate", {
+                dateFormat: "d/m/Y",
+                defaultDate: endDateParsed
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function () {
             // Add click event listener to rows

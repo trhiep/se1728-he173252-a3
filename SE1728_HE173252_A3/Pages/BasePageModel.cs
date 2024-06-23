@@ -24,6 +24,7 @@ namespace SE1728_HE173252_A3.Pages
             {"/Post/MyPosts", true },
             {"/Post/Search", true },
             {"/Post/PageDetailsModal", true },
+            {"/Post/PostReport", true },
         };
 
         public AppUser LogedInUser { get; private set; }

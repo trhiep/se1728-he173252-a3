@@ -44,6 +44,8 @@ namespace SE1728_HE173252_A3.Pages.Post
 
             await _hubContext.Clients.All.SendAsync("LoadPosts");
             await _hubContext.Clients.All.SendAsync("LoadMyPosts");
+            await _hubContext.Clients.All.SendAsync("LoadPostReport");
+            await _hubContext.Clients.All.SendAsync("LoadSPostSearch");
             return RedirectToPage("./Index");
         }
     }

@@ -12,8 +12,13 @@ connection.on("LoadPosts", function () {
 });
 
 connection.on("LoadMyPosts", function () {
-    console.log("Called LoadMyPosts");
     ShowMyPosts();
+});
+connection.on("LoadPostReport", function () {
+    ShowPostReport();
+});
+connection.on("LoadSPostSearch", function () {
+    ShowSearchedPost();
 });
 
 
@@ -127,6 +132,7 @@ function ShowMyPosts() {
             let html = `<tr>
                 <td>${item.PostID}</td>
                 <td style="max-width:250px">${item.Title}</td>
+                <td>${item.Author}</td>
                 <td>${item.Category}</td>
                 <td>${item.CreatedDate}</td>
                 <td>${item.UpdatedDate}</td>
@@ -135,6 +141,51 @@ function ShowMyPosts() {
                     <a href="/Post/Details?id=${item.PostID}" class="btn btn-success">Details</a> |
                     <a class="btn btn-danger btnDelete" data-id="${item.PostID}">Delete</a>
                 </td>
+            </tr>
+            `;
+            tbody.innerHTML += html;
+        }));
+};
+
+function ShowPostReport() {
+    let tbody = document.getElementById("post_report_table");
+    tbody.innerHTML = "";
+    var startDate = document.getElementById("startDate").value.replace(/\//g, "-");
+    var endDate = document.getElementById("endDate").value.replace(/\//g, "-");
+    console.log(startDate);
+    console.log(endDate);
+
+    fetch("/Post/PostReport?handler=GetPostsByDate&startDate=" + startDate + "&endDate=" + endDate)
+        .then(res => res.json())
+        .then(data => data.forEach(item => {
+            let html = `<tr class="click-row" data-post-id="${item.PostID}">
+                <td>${item.PostID}</td>
+                <td style="max-width:250px">${item.Title}</td>
+                <td>${item.Author}</td>
+                <td>${item.Category}</td>
+                <td>${item.CreatedDate}</td>
+                <td>${item.UpdatedDate}</td>
+            </tr>
+            `;
+            tbody.innerHTML += html;
+        }));
+};
+
+function ShowSearchedPost() {
+    let tbody = document.getElementById("search_post_table");
+    tbody.innerHTML = "";
+    var searchValue = document.getElementById("searchValue").value;
+
+    fetch("/Post/Search?handler=SearchPost&searchValue=" + searchValue)
+        .then(res => res.json())
+        .then(data => data.forEach(item => {
+            let html = `<tr class="click-row" data-post-id="${item.PostID}">
+                <td>${item.PostID}</td>
+                <td style="max-width:250px">${item.Title}</td>
+                <td>${item.Author}</td>
+                <td>${item.Category}</td>
+                <td>${item.CreatedDate}</td>
+                <td>${item.UpdatedDate}</td>
             </tr>
             `;
             tbody.innerHTML += html;
